@@ -1,0 +1,17 @@
+library(readr)     
+library(pROC)      
+
+dat <- read_csv("XXX.csv")
+
+set.seed(123)  
+
+n <- nrow(dat)
+train_index <- sample(1:n, size = 0.7 * n) 
+train <- dat[train_index, ]   
+test  <- dat[-train_index, ] 
+
+
+fit_model <- glm(formula=label~qrs+qt+HR+qa_aVR+ta_aVR+sa_V1+ra_V3+rd_V6+SexDSC+ta_V6, data=train,family="binomial")
+
+predicted=predict(fit_model,test,type="response")
+testroc = roc(test$label, predicted, ci=TRUE)
